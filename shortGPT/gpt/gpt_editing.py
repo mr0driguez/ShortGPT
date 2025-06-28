@@ -15,7 +15,7 @@ def getImageQueryPairs(captions, n=15, maxTime=2):
     
     try:
         # Get response and parse JSON
-        res = gpt_utils.llm_completion(chat_prompt=prompt)
+        res = str(gpt_utils.get_gpt4free_completion(prompt))
         data = extractJsonFromString(res)
         # Convert to pairs with time ranges
         pairs = []
@@ -67,7 +67,8 @@ def getVideoSearchQueriesTimed(captions_timed):
             prompt = chat.replace("<<TIMED_CAPTIONS>>", f"{captions_timed}")
             
             # Get response and parse JSON
-            res = gpt_utils.llm_completion(chat_prompt=prompt, system=system)
+            full_prompt = f"{system}\n\n{prompt}"
+            res = str(gpt_utils.get_gpt4free_completion(full_prompt))
             data = extractJsonFromString(res)
             
             # Convert to expected format

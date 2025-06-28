@@ -3,8 +3,9 @@ import json
 def generateFacts(facts_type):
     chat, system = gpt_utils.load_local_yaml_prompt('prompt_templates/facts_generator.yaml')
     chat = chat.replace("<<FACTS_TYPE>>", facts_type)
-    result = gpt_utils.llm_completion(chat_prompt=chat, system=system, temp=1.3)
-    return result
+    prompt = f"{system}\n\n{chat}"
+    result = gpt_utils.get_gpt4free_completion(prompt)
+    return str(result)
 
 def generateFactSubjects(n):
     out = []
@@ -13,11 +14,11 @@ def generateFactSubjects(n):
     maxAttempts = int(1.5*n)
     attempts=0
     while len(out) != n & attempts <= maxAttempts:
-
-        result = gpt_utils.llm_completion(chat_prompt=chat, system=system, temp=1.69)
+        prompt = f"{system}\n\n{chat}"
+        result = gpt_utils.get_gpt4free_completion(prompt)
         attempts+=1
         try:
-            out = json.loads(result.replace("'", '"'))
+            out = json.loads(str(result).replace("'", '"'))
         except Exception as e:
             print(f"INFO - Failed generating {n} fact subjects after {attempts} trials", e)
             pass

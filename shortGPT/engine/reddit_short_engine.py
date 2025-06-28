@@ -94,7 +94,7 @@ class RedditShortEngine(ContentShortEngine):
                                                                      'set_time_start': timing[0],
                                                                      'set_time_end': timing[1]})
             if self._db_num_images:
-                for timing, image_url in self._db_timed_image_urls:
+                for timing, image_url in self._db_timed_image_urls or []:
                     videoEditor.addEditingStep(EditingStep.SHOW_IMAGE, {'url': image_url,
                                                                         'set_time_start': timing[0],
                                                                         'set_time_end': timing[1]})

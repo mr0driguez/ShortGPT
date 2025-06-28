@@ -3,6 +3,7 @@ import traceback
 from enum import Enum
 
 import gradio as gr
+import g4f
 
 from gui.asset_components import AssetComponentsUtils
 from gui.ui_abstract_component import AbstractComponentUI
@@ -57,6 +58,8 @@ class VideoAutomationUI(AbstractComponentUI):
         if not pexels_api_key:
             return "Your Pexels API key is missing. Please go to the config tab and enter the API key."
 
+        return ""
+
     def generate_script(self, message, language):
         return gpt_chat_video.generateScript(message, language)
 
@@ -89,7 +92,7 @@ class VideoAutomationUI(AbstractComponentUI):
             inputVisible = True
             folderVisible = False
             if self.state == Chatstate.ASK_ORIENTATION:
-                errorMessage = self.is_key_missing()
+                errorMessage = False#self.is_key_missing()
                 if errorMessage:
                     bot_message = errorMessage
                 else:
@@ -203,3 +206,14 @@ class VideoAutomationUI(AbstractComponentUI):
             self.restart_button.click(self.reset_conversation, [])
             self.msg.submit(respond, [self.msg, self.chatbot], [self.msg, self.chatbot, self.outHTML, self.errorHTML, self.video_folder, self.restart_button])
         return self.video_automation
+
+def get_gpt4free_completion(prompt):
+    try:
+        result = g4f.ChatCompletion.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return result
+    except Exception as e:
+        print('Error communicating with g4f:', e)
+        raise

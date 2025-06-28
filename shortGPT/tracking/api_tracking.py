@@ -20,7 +20,7 @@ class APITracker:
             prompt = json.dumps(prompt)
             if self.datastore and result:
                 tokensUsed = gpt_utils.num_tokens_from_messages([prompt, result])
-                self.datastore.save('api_openai', tokensUsed, add=True)
+                self.datastore.save('api_openai', tokensUsed)
             return result
 
         return wrapper
@@ -31,19 +31,12 @@ class APITracker:
             result = audioFunc(*args, **kwargs)
             textInput = kwargs.get('text') or args[0]
             if self.datastore and result:
-                self.datastore.save('api_eleven', len(textInput), add=True)
+                self.datastore.save('api_eleven', len(textInput))
             return result
 
         return wrapper
     
 
-    def wrap_turbo(self):
-        func_name = "llm_completion"
-        module = __import__("gpt_utils", fromlist=["llm_completion"])
-        func = getattr(module, func_name)
-        wrapped_func = self.openAIWrapper(func)
-        setattr(module, func_name, wrapped_func)
-    
     def wrap_eleven(self):
         func_name = "generateVoice"
         module = __import__("audio_generation", fromlist=["generateVoice"])
@@ -53,7 +46,6 @@ class APITracker:
 
     
     def initiateAPITracking(self):
-        self.wrap_turbo()
         self.wrap_eleven()
 
 

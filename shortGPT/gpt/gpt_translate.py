@@ -1,10 +1,5 @@
-from shortGPT.gpt import gpt_utils
+from .gpt_utils import get_gpt4free_completion
 
-def translateContent(content, language):
-    chat, system = gpt_utils.load_local_yaml_prompt('prompt_templates/translate_content.yaml')
-    if language == "arabic":
-        language =="arabic, and make the translated text two third of the length of the original."
-    system = system.replace("<<LANGUAGE>>", language)
-    chat = chat.replace("<<CONTENT>>", content)
-    result = gpt_utils.llm_completion(chat_prompt=chat, system=system, temp=1)
-    return result
+def translate_text(text, target_language):
+    prompt = f"Translate the following text to {target_language}: {text}"
+    return get_gpt4free_completion(prompt)

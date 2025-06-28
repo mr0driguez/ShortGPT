@@ -17,8 +17,8 @@ class AssetComponentsUtils:
 
     instance_background_video_checkbox = None
     instance_background_music_checkbox = None
-    instance_voiceChoice: dict[gr.Radio] = {}
-    instance_voiceChoiceTranslation: dict[gr.Radio] = {}
+    instance_voiceChoice: dict[str, gr.Radio] = {}
+    instance_voiceChoiceTranslation: dict[str, gr.Radio] = {}
 
     @classmethod
     def getBackgroundVideoChoices(cls):
@@ -35,7 +35,11 @@ class AssetComponentsUtils:
     @classmethod
     def getElevenlabsVoices(cls):
         api_key = ApiKeyManager.get_api_key("ELEVENLABS_API_KEY")
-        voices = list(reversed(ElevenLabsAPI(api_key).get_voices().keys()))
+        voices_dict = ElevenLabsAPI(api_key).get_voices()
+        if not voices_dict:
+            print("No ElevenLabs voices found. Check your API key or ElevenLabs API status.")
+            return ["No voices available"]
+        voices = list(reversed(voices_dict.keys()))
         return voices
 
     @classmethod
@@ -73,28 +77,32 @@ class AssetComponentsUtils:
 
     @classmethod
     def voiceChoice(cls, provider: str = None):
-        if provider == None:
+        if provider is None:
             provider = cls.ELEVEN_TTS
         if cls.instance_voiceChoice.get(provider, None) is None:
             if provider == cls.ELEVEN_TTS:
+                voices = cls.getElevenlabsVoices() or ["No voices available"]
+                default_voice = voices[0] if voices else "No voices available"
                 cls.instance_voiceChoice[provider] = gr.Radio(
-                    cls.getElevenlabsVoices(),
+                    voices,
                     label="Elevenlabs voice",
-                    value="Chris",
+                    value=str(default_voice),
                     interactive=True,
                 )
         return cls.instance_voiceChoice[provider]
 
     @classmethod
     def voiceChoiceTranslation(cls, provider: str = None):
-        if provider == None:
+        if provider is None:
             provider = cls.ELEVEN_TTS
         if cls.instance_voiceChoiceTranslation.get(provider, None) is None:
             if provider == cls.ELEVEN_TTS:
+                voices = cls.getElevenlabsVoices() or ["No voices available"]
+                default_voice = voices[0] if voices else "No voices available"
                 cls.instance_voiceChoiceTranslation[provider] = gr.Radio(
-                    cls.getElevenlabsVoices(),
+                    voices,
                     label="Elevenlabs voice",
-                    value="Chris",
+                    value=str(default_voice),
                     interactive=True,
                 )
         return cls.instance_voiceChoiceTranslation[provider]

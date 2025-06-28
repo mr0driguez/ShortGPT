@@ -14,12 +14,14 @@ def generateRedditPostMetadata(title):
 
 def getInterestingRedditQuestion():
     chat, system = gpt_utils.load_local_yaml_prompt('prompt_templates/reddit_generate_question.yaml')
-    return gpt_utils.llm_completion(chat_prompt=chat, system=system, temp=1.08)
+    prompt = f"{system}\n\n{chat}"
+    return str(gpt_utils.get_gpt4free_completion(prompt))
 
 def createRedditScript(question):
     chat, system = gpt_utils.load_local_yaml_prompt('prompt_templates/reddit_generate_script.yaml')
     chat = chat.replace("<<QUESTION>>", question)
-    result = "Reddit, " + question +" "+gpt_utils.llm_completion(chat_prompt=chat, system=system, temp=1.08)
+    prompt = f"{system}\n\n{chat}"
+    result = "Reddit, " + question + " " + str(gpt_utils.get_gpt4free_completion(prompt))
     return result
     
 
@@ -30,7 +32,8 @@ def getRealisticness(text):
     while attempts <= 4:
         attempts+=1
         try:
-            result = gpt_utils.llm_completion(chat_prompt=chat, system=system, temp=1)
+            prompt = f"{system}\n\n{chat}"
+            result = str(gpt_utils.get_gpt4free_completion(prompt))
             return json.loads(result)['score']
         except Exception as e:
             print("Error in getRealisticness", e.args[0])
@@ -42,13 +45,15 @@ def getQuestionFromThread(text):
     else:
         chat, system = gpt_utils.load_local_yaml_prompt('prompt_templates/reddit_filter_realistic.yaml')
         chat = chat.replace("<<STORY>>", text)
-        question = gpt_utils.llm_completion(chat_prompt=chat, system=system).replace("\n", "")
+        prompt = f"{system}\n\n{chat}"
+        question = str(gpt_utils.get_gpt4free_completion(prompt)).replace("\n", "")
         question = question.replace('"', '').replace("?", "")
     return question
 
 
 def generateUsername():
     chat, system = gpt_utils.load_local_yaml_prompt('prompt_templates/reddit_username.yaml')
-    return gpt_utils.llm_completion(chat_prompt=chat, system=system, temp=1.2).replace("u/", "")
+    prompt = f"{system}\n\n{chat}"
+    return str(gpt_utils.get_gpt4free_completion(prompt)).replace("u/", "")
 
 

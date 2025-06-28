@@ -1,5 +1,6 @@
 import time
 import gradio as gr
+import g4f
 
 from gui.ui_tab_short_automation import ShortAutomationUI
 from gui.ui_tab_video_automation import VideoAutomationUI

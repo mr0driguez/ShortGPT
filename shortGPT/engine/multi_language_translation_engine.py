@@ -17,7 +17,7 @@ from shortGPT.editing_utils.captions import (getCaptionsWithTime,
                                              getSpeechBlocks)
 from shortGPT.editing_utils.handle_videos import get_aspect_ratio
 from shortGPT.engine.abstract_content_engine import CONTENT_DB, AbstractContentEngine
-from shortGPT.gpt.gpt_translate import translateContent
+from shortGPT.gpt.gpt_translate import translate_text
 
 class MultiLanguageTranslationEngine(AbstractContentEngine):
 
@@ -69,7 +69,7 @@ class MultiLanguageTranslationEngine(AbstractContentEngine):
             translated_timed_sentences = []
             for i, ((t1, t2), text) in tqdm(enumerate(self._db_speech_blocks), desc="Translating content"):
                 self.logger(f"2/5 - Translating text content - {i+1} / {len(self._db_speech_blocks)}")
-                translated_text = translateContent(text, self._db_target_language)
+                translated_text = translate_text(text, self._db_target_language)
                 translated_timed_sentences.append([[t1, t2], translated_text])
             self._db_translated_timed_sentences = translated_timed_sentences
 

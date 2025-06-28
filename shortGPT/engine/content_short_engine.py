@@ -57,7 +57,7 @@ class ContentShortEngine(AbstractContentEngine):
         self.verifyParameters(text=self._db_script)
         script = self._db_script
         if (self._db_language != Language.ENGLISH.value):
-            self._db_translated_script = gpt_translate.translateContent(script, self._db_language)
+            self._db_translated_script = str(gpt_translate.translate_text(script, self._db_language))
             script = self._db_translated_script
         self._db_temp_audio_path = self.voiceModule.generate_voice(
             script, self.dynamicAssetDir + "temp_audio_path.wav")
@@ -142,7 +142,7 @@ class ContentShortEngine(AbstractContentEngine):
                                                           'set_time_start': timing[0],
                                                           'set_time_end': timing[1]})
             if self._db_num_images:
-                for timing, image_url in self._db_timed_image_urls:
+                for timing, image_url in self._db_timed_image_urls or []:
                     videoEditor.addEditingStep(EditingStep.SHOW_IMAGE, {'url': image_url,
                                                                         'set_time_start': timing[0],
                                                                         'set_time_end': timing[1]})

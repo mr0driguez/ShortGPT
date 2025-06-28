@@ -24,7 +24,6 @@ setup(
     package_data={'': ['*.yaml', '*.json']},    # This will include all yaml files in package
     install_requires=[
         'python-dotenv', 
-        "openai==1.37.2", 
         'tiktoken',
         'tinydb',
         'tinymongo',
@@ -38,8 +37,10 @@ setup(
         'moviepy==2.1.2',
         'progress',
         'questionary',
+        'g4f[you]',
     ],
     keywords=['python', 'video', 'content creation', 'AI', 'automation', 'editing', 'voiceover synthesis', 'video captions', 'asset sourcing', 'tinyDB'],
+    license="GPL-2.0-or-later",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
