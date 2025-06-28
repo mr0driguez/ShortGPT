@@ -1,0 +1,15 @@
+services:
+  shortgpt:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: shortgpt
+    ports:
+      - "31415:31415"
+    volumes:
+      - .:/app
+      - /Users/maroth/videos:/app/videos
+      - /Users/maroth/music:/app/music
+    working_dir: /app
+      # - SOME_KEY=some_value
+    restart: unless-stopped

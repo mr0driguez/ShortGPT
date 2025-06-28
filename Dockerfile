@@ -9,6 +9,16 @@ WORKDIR /app
 # Copy requirements file
 COPY requirements.txt .
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        python3-dev \
+        libffi-dev \
+        libssl-dev \
+        && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --upgrade pip
+
 # Install dependencies
 RUN pip install -r requirements.txt
 
@@ -23,5 +33,5 @@ EXPOSE 31415
 # Print environment variables (for debugging purposes, you can remove this line if not needed)
 RUN ["printenv"]
 
-# Run Python script when the container launches
-CMD ["python", "-u", "./runShortGPT.py"]
+# Run Python script when the container launches, with hot-reloading
+CMD watchfiles --filter python "python -u ./runShortGPT.py" "."
